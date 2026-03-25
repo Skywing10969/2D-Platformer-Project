@@ -14,25 +14,73 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;                 // Reference to player rigidbody
     private bool isGrounded;                // Grounded check
 
+    private Animator animator;
+
+    public int extraJumpsValue = 1;
+    public int extraJumps;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();    // Getting the animator component on the player
+
+        extraJumps = extraJumpsValue;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Horizontal movement
-        float moveInput = Input.GetAxis("Horizontal");  // Get the input from keyboard A/D or left/right arrows
-        // apply horizontal speed
+        float moveInput = Input.GetAxis("Horizontal");
+
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
-        
-        // Jump movement
-        if(isGrounded  && Input.GetButtonDown("Jump"))
+
+        if (isGrounded)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            extraJumps = extraJumpsValue;
         }
+    
+        if(Input.GetButtonDown("Jump"))
+        {
+            if (isGrounded)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            }
+            else if(extraJumps > 0)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                extraJumps--;
+            }
+        }
+
+        SetAnimation(moveInput);
+    }
+
+    private void SetAnimation(float moveInput)
+    {
+        if (isGrounded)
+        {
+            if (moveInput == 0)
+            {
+                animator.Play("Player_Idle");
+            }
+            else
+            {
+                animator.Play("Player_Run");
+            }
+        }
+        else
+        {
+            if(rb.linearVelocityY > 0)
+            {
+                animator.Play("Player_Jump");
+            }
+            else
+            {
+                animator.Play("Player_Fall");
+            }
+        }
+        
     }
 
     private void FixedUpdate()

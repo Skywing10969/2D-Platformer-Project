@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public int coins;
     public int health = 100;
 
     private SpriteRenderer spriteRenderer;

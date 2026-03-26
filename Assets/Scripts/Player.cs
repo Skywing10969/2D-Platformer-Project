@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class Player : MonoBehaviour
     public Transform groundCheck;           // Empty object at Player's feet
     public float groundCheckRadius = 0.2f;  // Size of the circle used to detect ground
     public LayerMask groundLayer;           // Which layer the ground is on
+
+    public Image healthImage;
 
     // internal variables
     private Rigidbody2D rb;                 // Reference to player rigidbody
@@ -61,6 +64,8 @@ public class Player : MonoBehaviour
         }
 
         SetAnimation(moveInput);
+
+        healthImage.fillAmount = health / 100f;
     }
 
     private void SetAnimation(float moveInput)

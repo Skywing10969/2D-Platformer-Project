@@ -1,7 +1,12 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public int health = 100;
+
+    private SpriteRenderer spriteRenderer;
+
     public float moveSpeed = 4f;            // Player horizontal movement speed
 
     // jump variables
@@ -24,6 +29,8 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();    // Getting the animator component on the player
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         extraJumps = extraJumpsValue;
     }
@@ -86,5 +93,34 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Damage")
+        {
+            health -= 25;
+
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+
+            StartCoroutine(BlinkRed());
+
+            if (health <= 0)
+            {
+                Die();
+            }
+        }
+    }
+
+    private IEnumerator BlinkRed()
+    {
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = Color.white;
+    }
+
+    private void Die()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
     }
 }

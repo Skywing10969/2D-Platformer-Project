@@ -9,7 +9,7 @@ public class Coin : MonoBehaviour
         {
             Player player = collision.gameObject.GetComponent<Player>();
             player.coins += 1;
-            player.PlaySFX(coinClip, 0.4f);
+            player.PlaySFX(coinClip, 0.2f);
             Destroy(gameObject);
         }
     }

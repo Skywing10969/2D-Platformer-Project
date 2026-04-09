@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     // jump variables
     public float jumpForce = 8.0f;            // Vertical jump strength 
 
-    public float jumpContinuesForce = 1.0f;//episode 22
+    public float jumpContinuesForce = 2.0f;//episode 22
 
     public Transform groundCheck;           // Empty object at Player's feet
     public float groundCheckRadius = 0.2f;  // Size of the circle used to detect ground
@@ -102,9 +102,12 @@ public class Player : MonoBehaviour
         //added in episode 22 Variable jump height, not working in game, no idea why not
         //no idea why the vid asks for rb.linearVelocityY instead of rb.linearVelocity.y
         // doesn't matter anyways 'cause both ways do not cause you to jump higher when space bar is held
-        if (Input.GetButtonDown("Jump") && rb.linearVelocityY > 0)
-        {
-            rb.AddForceY(jumpContinuesForce);
+
+//        if (Input.GetButtonDown("Jump") && rb.linearVelocityY > 0)  <--this code doesn't work for variable jump height
+
+        if (Input.GetKey(KeyCode.Space) && rb.linearVelocityY > 0)
+            {
+                rb.AddForceY(jumpContinuesForce);
         }
 
         SetAnimation(moveInput);

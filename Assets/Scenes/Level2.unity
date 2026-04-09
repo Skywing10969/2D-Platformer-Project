@@ -1910,6 +1910,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef849ccbd238d1045ae5912fd57a0e66, type: 3}
+--- !u!1 &1714072465 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 623977165126665930, guid: ef849ccbd238d1045ae5912fd57a0e66, type: 3}
+  m_PrefabInstance: {fileID: 1714072464}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1740401170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1978,7 +1983,7 @@ PrefabInstance:
     - target: {fileID: 4522770874787424744, guid: b1f04c91dad185044a12d8562791779f, type: 3}
       propertyPath: winUI
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1714072465}
     - target: {fileID: 6941695627727566261, guid: b1f04c91dad185044a12d8562791779f, type: 3}
       propertyPath: m_Name
       value: Finish

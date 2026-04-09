@@ -12,7 +12,10 @@ public class Player : MonoBehaviour
     public float moveSpeed = 4f;            // Player horizontal movement speed
 
     // jump variables
-    public float jumpForce = 8f;            // Vertical jump strength
+    public float jumpForce = 8.0f;            // Vertical jump strength 
+
+    public float jumpContinuesForce = 1.0f;//episode 22
+
     public Transform groundCheck;           // Empty object at Player's feet
     public float groundCheckRadius = 0.2f;  // Size of the circle used to detect ground
     public LayerMask groundLayer;           // Which layer the ground is on
@@ -32,6 +35,13 @@ public class Player : MonoBehaviour
 
     public int extraJumpsValue = 1;
     public int extraJumps;
+    
+    public float coyoteTime = 0.2f;//added from episode 20
+    private float coyoteTimeCounter;//added from episode 20
+
+    public float jumpBufferTime = 0.15f;//added from episode 21
+    private float jumpBufferCounter;//added from episode 21
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -55,27 +65,63 @@ public class Player : MonoBehaviour
 
         if (isGrounded)
         {
+            coyoteTimeCounter = coyoteTime;//episode 20
             extraJumps = extraJumpsValue;
         }
-    
-        if(Input.GetButtonDown("Jump"))
+        else 
         {
-            if (isGrounded)
+            coyoteTimeCounter -=Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Jump"))//jump buffer time
+        {
+            jumpBufferCounter = jumpBufferTime;
+        }
+        else
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
+
+        if (jumpBufferCounter > 0f) 
+        {
+            if (coyoteTimeCounter > 0f) 
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 PlaySFX(jumpClip);
+                coyoteTimeCounter = 0f;
+                jumpBufferCounter = 0f;
             }
-            else if(extraJumps > 0)
+            else if (extraJumps > 0)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 extraJumps--;
                 PlaySFX(jumpClip);
+                jumpBufferCounter = 0f;
             }
+        }
+        //added in episode 22 Variable jump height, not working in game, no idea why not
+        //no idea why the vid asks for rb.linearVelocityY instead of rb.linearVelocity.y
+        // doesn't matter anyways 'cause both ways do not cause you to jump higher when space bar is held
+        if (Input.GetButtonDown("Jump") && rb.linearVelocityY > 0)
+        {
+            rb.AddForceY(jumpContinuesForce);
         }
 
         SetAnimation(moveInput);
 
         healthImage.fillAmount = health / 100f;
+
+        //episode 23 Gravity Scaling
+        //i do not see the effects of gravity scaling as desribed/shown in the vid
+        //can see it now but had to mod the PlayerObject in unity to have a gravity scale of 2
+        if (rb.linearVelocityY < 0)
+        {
+            rb.gravityScale = 3f;
+        }
+        else 
+        {
+            rb.gravityScale = 2f;
+        }
     }
 
     private void SetAnimation(float moveInput)
@@ -149,5 +195,15 @@ public class Player : MonoBehaviour
         audioSource.clip = audioClip;
         audioSource.volume = volume;
         audioSource.Play();
+    }
+
+    //added from episode 18
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Strawberry") 
+        {
+            extraJumps = 2;
+            Destroy(collision.gameObject);
+        }
     }
 }
